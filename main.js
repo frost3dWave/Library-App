@@ -63,19 +63,19 @@ function showBooks(array) {
         let row = tbody.insertRow();  // insert row on tbody tag to get the data entries
 
         let title = row.insertCell(0);   // add first cell in the row & similar below
-        title.innerHTML = book.title;  
+        title.textContent = book.title;  
 
         let author = row.insertCell(1);
-        author.innerHTML = book.author;
+        author.textContent = book.author;
 
         let pages = row.insertCell(2);
-        pages.innerHTML = book.pages;
+        pages.textContent = book.pages;
 
         let status = row.insertCell(3);
-        status.innerHTML = book.status;
+        status.textContent = book.status;
 
         let actions = row.insertCell(4);
-        actions.innerHTML = "DELETE";
+        actions.textContent = "DELETE";
     })
 };
 
