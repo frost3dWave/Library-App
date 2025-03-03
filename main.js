@@ -11,36 +11,36 @@ const bookStatus = document.querySelector("#status");
 const tbody = document.querySelector(".table-body");
 
 const myLibrary = [
-    // {
-    //     title: "newBook",
-    //     author: "newAuthor",
-    //     pages: 100,
-    //     status: "not read",
+    {
+        title: "newBook",
+        author: "newAuthor",
+        pages: 100,
+        status: "not read",
 
-    //     info: function(){
-    //         return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
-    //     }
-    // },
-    // {
-    //     title: "newBook2",
-    //     author: "newAuthor2",
-    //     pages: 200,
-    //     status: "completed",
+        info: function(){
+            return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
+        }
+    },
+    {
+        title: "newBook2",
+        author: "newAuthor2",
+        pages: 200,
+        status: "completed",
 
-    //     info: function(){
-    //         return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
-    //     }
-    // },
-    // {
-    //     title: "newBook3",
-    //     author: "newAuthor3",
-    //     pages: 300,
-    //     status: "in progess",
+        info: function(){
+            return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
+        }
+    },
+    {
+        title: "newBook3",
+        author: "newAuthor3",
+        pages: 300,
+        status: "in progess",
 
-    //     info: function(){
-    //         return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
-    //     }
-    // },
+        info: function(){
+            return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
+        }
+    },
 ];
 
 function Book(title, author, pages, status) {
@@ -59,7 +59,7 @@ function addBookToLibrary(title, author, pages, status) {
 };
 
 function showBooks(array) {
-    array.forEach(book => {
+    array.forEach((book, index) => {
         let row = tbody.insertRow();  // insert row on tbody tag to get the data entries
 
         let title = row.insertCell(0);   // add first cell in the row & similar below
@@ -74,9 +74,29 @@ function showBooks(array) {
         let status = row.insertCell(3);
         status.textContent = book.status;
 
+        // let actions = row.insertCell(4);
+        // actions.textContent = "DELETE";
         let actions = row.insertCell(4);
-        actions.textContent = "DELETE";
-    })
+        
+        // creating the img using DOM methods
+        const deleteImg = document.createElement("img");
+        deleteImg.src = "./assets/delete.svg";
+        deleteImg.alt = "";
+        deleteImg.height = 25;
+        deleteImg.width = 25;
+        deleteImg.dataset.index = index;  // setting the data attribute of the delete image to its corresponding index in the array
+
+        // to delete the row
+        deleteImg.addEventListener("click", () => {
+            myLibrary.splice(index, 1);  
+
+            // refresh the table 
+            tbody.innerHTML = "";
+            showBooks(myLibrary);
+        });
+
+        actions.appendChild(deleteImg);
+    });
 };
 
 openBtn.addEventListener("click", () => dialog.showModal());
@@ -97,3 +117,5 @@ submitBtn.addEventListener("click", event => {
     bookPages.value = "";
     bookStatus.value = "not-started";
 });
+
+showBooks(myLibrary);
