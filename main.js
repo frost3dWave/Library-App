@@ -10,38 +10,7 @@ const bookStatus = document.querySelector("#status");
 
 const tbody = document.querySelector(".table-body");
 
-const myLibrary = [
-    {
-        title: "newBook",
-        author: "newAuthor",
-        pages: 100,
-        status: "not read",
-
-        info: function(){
-            return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
-        }
-    },
-    {
-        title: "newBook2",
-        author: "newAuthor2",
-        pages: 200,
-        status: "completed",
-
-        info: function(){
-            return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
-        }
-    },
-    {
-        title: "newBook3",
-        author: "newAuthor3",
-        pages: 300,
-        status: "in progess",
-
-        info: function(){
-            return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
-        }
-    },
-];
+const myLibrary = [];
 
 function Book(title, author, pages, status) {
     this.title = title;
@@ -52,6 +21,28 @@ function Book(title, author, pages, status) {
     this.info = function() {
         return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
     }
+};
+
+Book.prototype.changeStatus = function(){
+    // direct approach using if-else statement for updating the status 
+
+    // if (this.status === "not-started"){
+    //     this.status = "in-progress";
+    // }else if (this.status === "in-progress"){
+    //     this.status = "completed";
+    // }else {
+    //     this.status = "not-started";
+    // }
+
+    // more efficient & maintainable approach 
+    const statusOptions = ["Not-Started", "In-Progress", "Completed"];
+
+    const currentStatus = this.status;
+    const currentIndex = statusOptions.indexOf(currentStatus);
+
+    const nextIndex = (currentIndex + 1) % statusOptions.length;  // toggle to next option in the array to change status & if at final element, rolls back to start of the array with module operator [currentIndex(2) + 1] % array.length(3) = 3 % 3 = 0 == returns to first element
+    
+    this.status = statusOptions[nextIndex]; //changes status to next one in the array
 };
 
 function addBookToLibrary(title, author, pages, status) {
@@ -73,10 +64,26 @@ function showBooks(array) {
 
         let status = row.insertCell(3);
         status.textContent = book.status;
+        status.dataset.index = index;  // setting the data attribute to its index in the array to specifically update the status of that particular book
 
-        // let actions = row.insertCell(4);
-        // actions.textContent = "DELETE";
+        // for changing the book status 
+        status.addEventListener("click", () => {
+            const bookIndex = parseInt(status.dataset.index);
+            const bookToUpdate = myLibrary[bookIndex];
+
+            // updating the book object 
+            bookToUpdate.changeStatus();
+
+            // updating the entire table after each status change
+            // tbody.innerHTML = "";
+            // showBooks(myLibrary); 
+
+            // updating only the row whose status was changed 
+            status.textContent = bookToUpdate.status;
+        });
+
         let actions = row.insertCell(4);
+        // actions.textContent = "DELETE";
         
         // creating the img using DOM methods
         const deleteImg = document.createElement("img");
@@ -90,7 +97,7 @@ function showBooks(array) {
         deleteImg.addEventListener("click", () => {
             myLibrary.splice(index, 1);  
 
-            // refresh the table 
+            // update the table 
             tbody.innerHTML = "";
             showBooks(myLibrary);
         });
@@ -115,7 +122,5 @@ submitBtn.addEventListener("click", event => {
     bookTitle.value = "";
     bookAuthor.value = "";
     bookPages.value = "";
-    bookStatus.value = "not-started";
+    bookStatus.value = "Not-Started";
 });
-
-showBooks(myLibrary);
