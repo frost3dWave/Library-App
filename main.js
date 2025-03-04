@@ -8,6 +8,7 @@ const bookAuthor = document.querySelector("#book-author");
 const bookPages = document.querySelector("#book-pages");
 const bookStatus = document.querySelector("#status");
 
+const table = document.querySelector("table");  
 const tbody = document.querySelector(".table-body");
 
 const myLibrary = [];
@@ -65,6 +66,7 @@ function showBooks(array) {
         let status = row.insertCell(3);
         status.textContent = book.status;
         status.dataset.index = index;  // setting the data attribute to its index in the array to specifically update the status of that particular book
+        status.style.cursor = "pointer";
 
         // for changing the book status 
         status.addEventListener("click", () => {
@@ -106,6 +108,14 @@ function showBooks(array) {
     });
 };
 
+function updateTableVisibility() {
+    if(myLibrary.length > 0) {
+        table.style.display = "table";
+    } else {
+        table.style.display = "none";
+    }
+}
+
 openBtn.addEventListener("click", () => dialog.showModal());
 
 closeBtn.addEventListener("click", () => dialog.close());
@@ -113,9 +123,18 @@ closeBtn.addEventListener("click", () => dialog.close());
 submitBtn.addEventListener("click", event => {
     event.preventDefault();  // prevent default submit behavior of sending data to the server
 
-    tbody.innerHTML = "";    // remove all the current html child elements from tbody element to not get repeating data entries of earlier rows each time a new data is added.
+    // check if all form field have values
+    if (bookTitle.value === "" || bookAuthor.value === "" || bookPages.value === "") {
+        alert("Please Enter All the Required values!");
+        return;
+    }
 
+    tbody.innerHTML = "";    // remove all the current html child elements from tbody element to not get repeating data entries of earlier rows each time a new data is added.
+    
     addBookToLibrary(bookTitle.value, bookAuthor.value, bookPages.value, bookStatus.value);
+
+    updateTableVisibility(); // show table if at least 1 book is present in the array
+
     showBooks(myLibrary);
 
     // reset the form to start with fresh form fields for new entries
@@ -123,4 +142,8 @@ submitBtn.addEventListener("click", event => {
     bookAuthor.value = "";
     bookPages.value = "";
     bookStatus.value = "Not-Started";
+
+    dialog.close(); // close the form once submit btn is clicked
 });
+
+updateTableVisibility(); // on page load for initial visibility
