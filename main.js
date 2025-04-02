@@ -13,37 +13,40 @@ const tbody = document.querySelector(".table-body");
 
 const myLibrary = [];
 
-function Book(title, author, pages, status) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.status = status;
+class Book{
 
-    this.info = function() {
+    constructor(title, author, pages, status){
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.status = status;
+    }
+
+    info() {
         return `"${this.title} by ${this.author}, ${this.pages} pages, ${this.status}"`
     }
-};
 
-Book.prototype.changeStatus = function(){
-    // direct approach using if-else statement for updating the status 
-
-    // if (this.status === "not-started"){
-    //     this.status = "in-progress";
-    // }else if (this.status === "in-progress"){
-    //     this.status = "completed";
-    // }else {
-    //     this.status = "not-started";
-    // }
-
-    // more efficient & maintainable approach 
-    const statusOptions = ["Not-Started", "In-Progress", "Completed"];
-
-    const currentStatus = this.status;
-    const currentIndex = statusOptions.indexOf(currentStatus);
-
-    const nextIndex = (currentIndex + 1) % statusOptions.length;  // toggle to next option in the array to change status & if at final element, rolls back to start of the array with module operator [currentIndex(2) + 1] % array.length(3) = 3 % 3 = 0 == returns to first element
+    changeStatus() {
+        // direct approach using if-else statement for updating the status 
     
-    this.status = statusOptions[nextIndex]; //changes status to next one in the array
+        // if (this.status === "not-started"){
+        //     this.status = "in-progress";
+        // }else if (this.status === "in-progress"){
+        //     this.status = "completed";
+        // }else {
+        //     this.status = "not-started";
+        // }
+    
+        // more efficient & maintainable approach 
+        const statusOptions = ["Not-Started", "In-Progress", "Completed"];
+    
+        const currentStatus = this.status;
+        const currentIndex = statusOptions.indexOf(currentStatus);
+    
+        const nextIndex = (currentIndex + 1) % statusOptions.length;  // toggle to next option in the array to change status & if at final element, rolls back to start of the array with module operator [currentIndex(2) + 1] % array.length(3) = 3 % 3 = 0 == returns to first element
+        
+        this.status = statusOptions[nextIndex]; //changes status to next one in the array
+    };
 };
 
 function addBookToLibrary(title, author, pages, status) {
@@ -93,7 +96,7 @@ function showBooks(array) {
         deleteImg.alt = "";
         deleteImg.height = 25;
         deleteImg.width = 25;
-        deleteImg.dataset.index = index;  // setting the data attribute of the delete image to its corresponding index in the array
+        // deleteImg.dataset.index = index;  // setting the data attribute of the delete image to its corresponding index in the array
 
         // to delete the row
         deleteImg.addEventListener("click", () => {
